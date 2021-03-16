@@ -12,7 +12,9 @@ function changeFoto(){
         if(user.photoURL != null){
             $('#perfilFoto').attr("src",firebase.auth().currentUser.photoURL);
         }
-    } 
+    } else {
+        $('#perfilFoto').attr('src', 'img/avatar.png')
+    }
 }
 function changeProfile(){
     if($("#fotoPerfil").val() != ''){
