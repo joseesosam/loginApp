@@ -16,12 +16,14 @@ var userLogued = 0;
                 console.log("logueado ok");
                 //console.log(user);
                 document.getElementById('aName').innerHTML = "Welcome, " + user.displayName + "!";
+                if (userLogued.photoURL !== null) {
+                    document.getElementById('perfilFoto').src = userLogued.photoURL;
+                }
             }else{
                 userLogued = 0;
                 console.log("no logueado ok");
                 window.location.replace("login.html");
             }
-
         });
     }
 
