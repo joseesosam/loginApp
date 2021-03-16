@@ -1,39 +1,46 @@
 var posteos = firebase.database().ref('posteos');
 var comments = firebase.database().ref('comments');
 $(document).ready(function(){
+
     $("#fotoPerfil").on('change', function(){changeProfile();});
+    
 });
-window.onload=function(){
-    changeFoto();
-}
+
 function changeFoto(){
     var user = firebase.auth().currentUser;
+    //var nameImg = user.uid+'profile.jpg';
+    console.log(user)
     if(user != null){
         if(user.photoURL != null){
             $('#perfilFoto').attr("src",firebase.auth().currentUser.photoURL);
         }
     } else {
-        $('#perfilFoto').attr('src', 'img/avatar.png')
+         $('#perfilFoto').attr('src', 'img/avatar1.png');
     }
 }
+
 function changeProfile(){
     if($("#fotoPerfil").val() != ''){
         // Create a root reference
-        var storageRef = firebase.storage().ref();;
+        var storageRef = firebase.storage().ref();
         // Create a reference to 'mountains.jpg'
         var imgProfileRef = storageRef.child(userLogued.uid+'profile.jpg');
         var file = $("#fotoPerfil").prop('files')[0];
         imgProfileRef.put(file).then(function(snapshot) {
-            
-            userLogued.updateProfile({
-            photoURL: snapshot.downloadURL
-            }).then(function() {
-                changeFoto();
-                alert("se actualizó la foto de usuario");
-            }).catch(function(error) {
-                alert("Error NO se actualizó la foto de usuario")
-            });
-
+            console.log('Imagen Subida a Firebase Storage !');
+        })
+        .then(function(){
+            imgProfileRef.getDownloadURL().then(function (downloadURL) {   // Obtengo la URL de la imagen 
+                console.log('URL de la imagen: ', downloadURL);
+                userLogued.updateProfile({
+                    photoURL: downloadURL
+                }).then(function() {
+                     $('#perfilFoto').attr("src",downloadURL);
+                    alert("se actualizó la foto de usuario");
+                }).catch(function(error) {
+                    alert("Error NO se actualizó la foto de usuario")
+                });
+            })
         });
     }
 }
@@ -226,7 +233,7 @@ function saveComment(postKey, idcomentHtml){
         postKey:postKey
     });
 }
-console.log(commentCrud.read(dataPosteos.key));
+//console.log(commentCrud.read(dataPosteos.key));
 
 function cargarPost() {
     var dataPosteos = [];
